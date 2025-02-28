@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { questionsData } from '../data/questionsData';
 import './qa-playground.css';
 
@@ -7,9 +7,47 @@ const QAPlayground = () => {
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [showSolution, setShowSolution] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
  
   const currentQuestion = questionsData[currentQuestionIndex];
- 
+
+  // Set up keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Enter key to check answer
+      if (e.key === 'Enter' && !showSolution) {
+        checkAnswer();
+      }
+      
+      // Left arrow for previous question
+      if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+        handlePrevious();
+      }
+      
+      // Right arrow for next question
+      if (e.key === 'ArrowRight' && currentQuestionIndex < questionsData.length - 1) {
+        handleNext();
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentQuestionIndex, showSolution, userAnswer]); // Dependencies
+
+  // Toggle theme and update document class for CSS
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+  }, [isDarkMode]);
+
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -34,6 +72,10 @@ const QAPlayground = () => {
     const isCorrect = userAnswer.trim() === currentQuestion.solution.trim();
     setFeedback(isCorrect);
     setShowSolution(true);
+  };
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   // Safely process code string to highlight missing parts
@@ -70,10 +112,13 @@ const QAPlayground = () => {
   };
  
   return (
-    <div className="qa-container">
+    <div className={`qa-container ${isDarkMode ? 'dark-theme' : ''}`}>
       {/* Header */}
       <div className="qa-header">
         <h1 className="qa-title">Code Playground</h1>
+        <button onClick={toggleTheme} className="theme-toggle">
+          {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        </button>
       </div>
      
       {/* Navigation bar */}
@@ -120,6 +165,7 @@ const QAPlayground = () => {
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
               className="answer-input"
+              placeholder="Type your answer here (press Enter to check)"
             />
           </div>
         </div>
@@ -149,6 +195,11 @@ const QAPlayground = () => {
             </div>
           </div>
         )}
+        
+        {/* Keyboard shortcuts help */}
+        <div className="keyboard-shortcuts">
+          <p>Keyboard shortcuts: ⬅️ Previous | ➡️ Next | Enter to Check Answer</p>
+        </div>
       </div>
     </div>
   );

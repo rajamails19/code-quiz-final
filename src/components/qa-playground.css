@@ -1,20 +1,84 @@
+/* CSS Variables for theming */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --border-primary: #3b82f6;
+  --border-secondary: #22c55e;
+  --code-bg: #f8f9fa;
+  --button-bg: #3b82f6;
+  --button-text: white;
+  --button-disabled-bg: #e5e7eb;
+  --button-disabled-text: #9ca3af;
+  --solution-correct-bg: #dcfce7;
+  --solution-correct-border: #22c55e;
+  --solution-incorrect-bg: #fee2e2;
+  --solution-incorrect-border: #ef4444;
+  --missing-code-underline: #fca5a5;
+}
+
+/* Dark theme variables */
+.dark-theme {
+  --bg-color: #1e293b;
+  --text-color: #e2e8f0;
+  --border-primary: #3b82f6;
+  --border-secondary: #22c55e;
+  --code-bg: #0f172a;
+  --button-bg: #3b82f6;
+  --button-text: white;
+  --button-disabled-bg: #334155;
+  --button-disabled-text: #94a3b8;
+  --solution-correct-bg: #064e3b;
+  --solution-correct-border: #22c55e;
+  --solution-incorrect-bg: #7f1d1d;
+  --solution-incorrect-border: #ef4444;
+  --missing-code-underline: #ef4444;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* Main container */
 .qa-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 /* Header and Title */
 .qa-header {
   margin-bottom: 20px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .qa-title {
   font-size: 24px;
   font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border-primary);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: var(--border-primary);
+  color: white;
 }
 
 /* Navigation */
@@ -25,16 +89,16 @@
 }
 
 .nav-button {
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border: none;
   padding: 8px 16px;
   cursor: pointer;
 }
 
 .nav-button.disabled {
-  background-color: #e5e7eb;
-  color: #9ca3af;
+  background-color: var(--button-disabled-bg);
+  color: var(--button-disabled-text);
   cursor: not-allowed;
 }
 
@@ -51,10 +115,10 @@
 }
 
 .code-container {
-  border: 1px solid #3b82f6; /* Blue border for question box */
+  border: 1px solid var(--border-primary);
   padding: 15px;
   margin-bottom: 20px;
-  background-color: #fff;
+  background-color: var(--code-bg);
 }
 
 .question-description {
@@ -68,7 +132,7 @@
 }
 
 .missing-code {
-  border-bottom: 2px solid #fca5a5; /* Light red underline */
+  border-bottom: 2px solid var(--missing-code-underline);
   display: inline-block;
 }
 
@@ -83,7 +147,7 @@
 }
 
 .answer-container {
-  border: 1px solid #22c55e; /* Green border for answer box */
+  border: 1px solid var(--border-secondary);
   padding: 0;
   display: flex;
   align-items: center;
@@ -97,6 +161,12 @@
   font-family: inherit;
   background: transparent;
   width: 100%;
+  color: var(--text-color);
+}
+
+.answer-input::placeholder {
+  color: var(--button-disabled-text);
+  opacity: 0.7;
 }
 
 .answer-input:focus {
@@ -105,8 +175,8 @@
 
 /* Check Answer Button */
 .check-button {
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border: none;
   padding: 8px 16px;
   cursor: pointer;
@@ -120,13 +190,13 @@
 }
 
 .solution-box.incorrect {
-  background-color: #fee2e2;
-  border: 1px solid #ef4444;
+  background-color: var(--solution-incorrect-bg);
+  border: 1px solid var(--solution-incorrect-border);
 }
 
 .solution-box.correct {
-  background-color: #dcfce7;
-  border: 1px solid #22c55e;
+  background-color: var(--solution-correct-bg);
+  border: 1px solid var(--solution-correct-border);
 }
 
 .feedback-text {
@@ -143,4 +213,14 @@
 
 .solution-value {
   font-family: monospace;
+}
+
+/* Keyboard shortcuts info */
+.keyboard-shortcuts {
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+  border-top: 1px solid var(--border-primary);
 }
