@@ -8,8 +8,21 @@ const QAPlayground = () => {
   const [feedback, setFeedback] = useState(null);
   const [showSolution, setShowSolution] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
  
   const currentQuestion = questionsData[currentQuestionIndex];
+
+  // Check screen size for responsive adjustments
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Set up keyboard shortcuts
   useEffect(() => {
@@ -128,7 +141,7 @@ const QAPlayground = () => {
           disabled={currentQuestionIndex === 0}
           className={`nav-button ${currentQuestionIndex === 0 ? 'disabled' : ''}`}
         >
-          Previous
+          {isMobile ? '←' : 'Previous'}
         </button>
        
         <span className="question-counter">
@@ -140,7 +153,7 @@ const QAPlayground = () => {
           disabled={currentQuestionIndex === questionsData.length - 1}
           className={`nav-button ${currentQuestionIndex === questionsData.length - 1 ? 'disabled' : ''}`}
         >
-          Next
+          {isMobile ? '→' : 'Next'}
         </button>
       </div>
      
@@ -165,17 +178,19 @@ const QAPlayground = () => {
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
               className="answer-input"
-              placeholder="Type your answer here (press Enter to check)"
+              placeholder={isMobile ? "Type answer here" : "Type your answer here (press Enter to check)"}
             />
           </div>
         </div>
         
-        <button
-          onClick={checkAnswer}
-          className="check-button"
-        >
-          Check Answer
-        </button>
+        <div style={{ textAlign: 'center' }}>
+          <button
+            onClick={checkAnswer}
+            className="check-button"
+          >
+            Check Answer
+          </button>
+        </div>
        
         {/* Solution display */}
         {showSolution && (
@@ -198,7 +213,14 @@ const QAPlayground = () => {
         
         {/* Keyboard shortcuts help */}
         <div className="keyboard-shortcuts">
-          <p>Keyboard shortcuts: ⬅️ Previous | ➡️ Next | Enter to Check Answer</p>
+          {isMobile ? (
+            <p>
+              <span>← Previous | → Next</span>
+              <span>Enter to Check Answer</span>
+            </p>
+          ) : (
+            <p>Keyboard shortcuts: ⬅️ Previous | ➡️ Next | Enter to Check Answer</p>
+          )}
         </div>
       </div>
     </div>
