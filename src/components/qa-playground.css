@@ -1,4 +1,8 @@
+/* previous one which was all good */
+
 /* CSS Variables for theming */
+
+
 :root {
   --bg-color: #ffffff;
   --text-color: #333333;
@@ -183,6 +187,35 @@ body {
   opacity: 0.7;
 }
 
+/* Language Tabs Styling */
+.language-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.language-tab {
+  padding: 10px 20px;
+  margin: 0 5px;
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.language-tab:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.language-tab.active {
+  border-bottom: 3px solid var(--border-primary);
+  font-weight: bold;
+}
+
 .answer-input:focus {
   outline: none;
 }
@@ -243,10 +276,94 @@ body {
   border-top: 1px solid var(--border-primary);
 }
 
+/* Tag Selection (Placed between Light Mode & Question Counter) */
+.tag-selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+
+.tag-label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.tag-button {
+  margin: 5px;
+  padding: 5px 10px;
+  border: 1px solid #3b82f6;
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tag-button.selected {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Tag Filter (Top Right Corner) */
+/* Tag Filter (Top Right Corner) */
+.tag-filter-container {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  background-color: var(--code-bg); /* Matches the code background for better visibility */
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* Dropdown Styling */
+.tag-filter-container select {
+  padding: 5px;
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* When the dropdown is focused */
+.tag-filter-container select:focus {
+  outline: none;
+  border-color: var(--border-secondary);
+}
+
+/* Ensure dropdown is readable in dark mode */
+.dark-theme .tag-filter-container select {
+  background-color: var(--code-bg);
+  color: var(--text-color);
+}
+
+.tag-filter-container label {
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+
 /* Media Queries for responsive design */
 @media (max-width: 768px) {
   .qa-container {
     padding: 10px;
+  }
+  .tag-selection {
+    flex-direction: column;
+    align-items: center;
+  }
+  .language-tab {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  .tag-filter-container {
+    position: static;
+    text-align: center;
+    margin-bottom: 10px;
   }
   
   .nav-container {
@@ -271,6 +388,10 @@ body {
   .qa-title {
     font-size: 20px;
   }
+  .language-tab {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
   
   .question-title {
     font-size: 16px;
@@ -283,6 +404,7 @@ body {
   .code-block {
     font-size: 12px;
   }
+
   
   .nav-container {
     flex-direction: column;
@@ -308,5 +430,38 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  .tag-filter-container {
+    margin: 15px 0;
+    text-align: center;
+  }
+  
+  .tag-filter-container label {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  
+  .tag-button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: 1px solid #3b82f6;
+    background-color: transparent;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .tag-button.selected {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .solution-box.correct {
+    background-color: #dcfce7;
+    border: 1px solid #22c55e;
+  }
+  
+  .solution-box.incorrect {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
   }
 }

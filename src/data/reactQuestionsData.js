@@ -1,4 +1,4 @@
-export const questionsData = [
+export const reactQuestionsData = [
   {
     id: 1,
     title: "React State Initialization",

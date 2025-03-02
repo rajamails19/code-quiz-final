@@ -1,16 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { questionsData } from '../data/questionsData';
+import { javaQuestionsData } from '../data/javaQuestionsData';
+import { reactQuestionsData } from '../data/reactQuestionsData'; // Import React questions
 import './qa-playground.css';
 
 const QAPlayground = () => {
+  // State to track the selected language
+  const [selectedLanguage, setSelectedLanguage] = useState('java');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [showSolution, setShowSolution] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
- 
-  const currentQuestion = questionsData[currentQuestionIndex];
+
+  // Get questions based on selected language
+  const getQuestions = () => {
+    switch(selectedLanguage) {
+      case 'react':
+        return reactQuestionsData;
+      case 'java':
+      default:
+        return javaQuestionsData;
+    }
+  };
+  
+  // Current questions based on selected language
+  const questions = getQuestions();
+  const currentQuestion = questions[currentQuestionIndex];
+
+  // Reset the current question index when changing languages
+  useEffect(() => {
+    setCurrentQuestionIndex(0);
+    resetQuestion();
+  }, [selectedLanguage]);
 
   // Check screen size for responsive adjustments
   useEffect(() => {
@@ -38,7 +60,7 @@ const QAPlayground = () => {
       }
       
       // Right arrow for next question
-      if (e.key === 'ArrowRight' && currentQuestionIndex < questionsData.length - 1) {
+      if (e.key === 'ArrowRight' && currentQuestionIndex < questions.length - 1) {
         handleNext();
       }
     };
@@ -50,7 +72,7 @@ const QAPlayground = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [currentQuestionIndex, showSolution, userAnswer]); // Dependencies
+  }, [currentQuestionIndex, showSolution, userAnswer, questions.length]);
 
   // Toggle theme and update document class for CSS
   useEffect(() => {
@@ -69,7 +91,7 @@ const QAPlayground = () => {
   };
  
   const handleNext = () => {
-    if (currentQuestionIndex < questionsData.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       resetQuestion();
     }
@@ -91,8 +113,15 @@ const QAPlayground = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  // Handle language change
+  const handleLanguageChange = (language) => {
+    setSelectedLanguage(language);
+  };
+
   // Safely process code string to highlight missing parts
   const highlightMissingCode = (codeString) => {
+    if (!codeString) return null;
+    
     const codeLines = codeString.split('\n');
     const processedLines = codeLines.map((line, lineIndex) => {
       if (line.includes('/* Missing') && line.includes('*/')) {
@@ -133,6 +162,22 @@ const QAPlayground = () => {
           {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>
       </div>
+      
+      {/* Language Tabs */}
+      <div className="language-tabs">
+        <button 
+          className={`language-tab ${selectedLanguage === 'java' ? 'active' : ''}`}
+          onClick={() => handleLanguageChange('java')}
+        >
+          Java
+        </button>
+        <button 
+          className={`language-tab ${selectedLanguage === 'react' ? 'active' : ''}`}
+          onClick={() => handleLanguageChange('react')}
+        >
+          React
+        </button>
+      </div>
      
       {/* Navigation bar */}
       <div className="nav-container">
@@ -145,13 +190,13 @@ const QAPlayground = () => {
         </button>
        
         <span className="question-counter">
-          Question {currentQuestionIndex + 1} of {questionsData.length}
+          Question {currentQuestionIndex + 1} of {questions.length}
         </span>
        
         <button
           onClick={handleNext}
-          disabled={currentQuestionIndex === questionsData.length - 1}
-          className={`nav-button ${currentQuestionIndex === questionsData.length - 1 ? 'disabled' : ''}`}
+          disabled={currentQuestionIndex === questions.length - 1}
+          className={`nav-button ${currentQuestionIndex === questions.length - 1 ? 'disabled' : ''}`}
         >
           {isMobile ? '→' : 'Next'}
         </button>
@@ -159,13 +204,13 @@ const QAPlayground = () => {
      
       {/* Question content */}
       <div className="question-section">
-        <h2 className="question-title">{currentQuestion.title}</h2>
+        <h2 className="question-title">{currentQuestion?.title}</h2>
         
         <div className="code-container">
-          <p className="question-description">{currentQuestion.description}</p>
+          <p className="question-description">{currentQuestion?.description}</p>
          
           <div className="code-block">
-            <pre>{highlightMissingCode(currentQuestion.code)}</pre>
+            <pre>{highlightMissingCode(currentQuestion?.code)}</pre>
           </div>
         </div>
        
@@ -201,12 +246,12 @@ const QAPlayground = () => {
            
             <div className="solution-section">
               <p className="solution-label">Solution:</p>
-              <p className="solution-value">{currentQuestion.solution}</p>
+              <p className="solution-value">{currentQuestion?.solution}</p>
             </div>
            
             <div className="explanation-section">
               <p className="explanation-label">Explanation:</p>
-              <p className="explanation-value">{currentQuestion.explanation}</p>
+              <p className="explanation-value">{currentQuestion?.explanation}</p>
             </div>
           </div>
         )}
