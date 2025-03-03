@@ -50,14 +50,15 @@ body {
 
 /* Main container */
 .qa-container {
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 15px;
+  max-width: 1000px;  /* Increase width for better centering */
+  width: calc(100% - 250px); /* Adjust width based on sidebar */
+  margin: 0 auto; /* Center the content */
+  padding: 20px;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
+  transition: margin-left 0.3s ease-in-out;
 }
 
 /* Header and Title */
@@ -210,10 +211,59 @@ body {
 .language-tab:hover {
   background-color: rgba(59, 130, 246, 0.1);
 }
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #1e293b;
+  color: white;
+  padding: 15px;
+  overflow-y: auto;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Sidebar Buttons */
+.sidebar button {
+  background: none;
+  border: none;
+  color: white;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.sidebar button:hover {
+  background: #3b82f6;
+}
+
+.sidebar button.active {
+  background: #2563eb;
+}
 
 .language-tab.active {
   border-bottom: 3px solid var(--border-primary);
   font-weight: bold;
+}
+
+/* Adjusting Space & Proper Layout */
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.qa-content {
+  flex: 1;
+  max-width: 800px;
 }
 
 .answer-input:focus {
@@ -350,6 +400,11 @@ body {
 @media (max-width: 768px) {
   .qa-container {
     padding: 10px;
+    margin-left: 190px;
+  }
+  .sidebar {
+    width: 180px;
+    padding: 10px;
   }
   .tag-selection {
     flex-direction: column;
@@ -387,6 +442,12 @@ body {
 @media (max-width: 480px) {
   .qa-title {
     font-size: 20px;
+  }
+  .qa-container {
+    margin-left: 0;
+  }
+  .sidebar {
+    transform: translateX(-100%);
   }
   .language-tab {
     padding: 6px 10px;

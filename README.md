@@ -68,3 +68,34 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### AI-Hint System (Optional)
+
+Why?
+
+    Some questions might be too difficult, so hints help without giving away answers.
+    Encourages learning instead of memorization.
+
+How?
+
+    Add a "Hint" button that reveals a small clue.
+    Use GPT-based API to generate explanations dynamically.
+
+Implementation Plan:
+
+    Manually add hints for each question (hintsData.js).
+    When clicking "Hint", show the predefined hint instead of the full solution.
+
+### Spaced Repetition:
+
+Automatically resurface questions you got wrong after a certain period
+Implement a simple SRS (Spaced Repetition System) that presents questions at optimal intervals for learning
+
+### Notes Feature:
+
+Allow adding personal notes to questions for future reference
+This could be especially useful for questions you struggle with
+
+### Question Shuffle:
+
+Add a button to randomly shuffle questions for variety

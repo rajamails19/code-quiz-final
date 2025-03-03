@@ -1,5 +1,8 @@
 export const reactQuestionsData = [
   {
+    category: "Set 1",
+    questions: [
+  {
     id: 1,
     title: "React State Initialization",
     description: "Fill in the missing state initialization to make the counter work.",
@@ -215,7 +218,13 @@ export const reactQuestionsData = [
 }`,
     solution: "useMemo(() =>",
     explanation: "The useMemo hook memoizes the result of a calculation between re-renders. It recalculates the value only when one of the dependencies changes. This helps avoid expensive calculations on every render, improving performance."
-  },
+  }
+]
+},
+{
+  category: "Set 2",
+    questions: [
+
   {
     id: 11,
     title: "React Fragment",
@@ -422,4 +431,6 @@ function Counter() {
     solution: "return () => clearInterval(intervalId);",
     explanation: "When your effect creates resources that need to be cleaned up before the component leaves the screen (like subscriptions or timers), your effect should return a cleanup function. This prevents memory leaks by ensuring timers are cleared when the component unmounts."
   }
-];
+]
+  }
+]

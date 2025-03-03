@@ -13,6 +13,12 @@ const QAPlayground = () => {
   const [showSolution, setShowSolution] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  // const [selectedSet, setSelectedSet] = useState("Set 1");
+  const [selectedSets, setSelectedSets] = useState({
+    java: "Set 1",
+    react: "Set 1",
+    python: "Set 1"
+  });
   
   // Tag-related state
   const [taggedQuestions, setTaggedQuestions] = useState({
@@ -27,16 +33,26 @@ const QAPlayground = () => {
 
   // Get questions based on selected language
   const getQuestions = useCallback(() => {
-    switch(selectedLanguage) {
+    let allSets;
+  
+    switch (selectedLanguage) {
       case 'react':
-        return reactQuestionsData;
+        allSets = reactQuestionsData;
+        break;
       case 'python':
-          return pythonQuestionsData;
+        allSets = pythonQuestionsData;
+        break;
       case 'java':
       default:
-        return javaQuestionsData;
+        allSets = javaQuestionsData;
+        break;
     }
-  }, [selectedLanguage]);
+  
+    // Find the selected set for the current language
+  const selectedSetData = allSets.find(set => set.category === selectedSets[selectedLanguage]);
+  return selectedSetData ? selectedSetData.questions : [];
+}, [selectedLanguage, selectedSets]);
+  
   
   // Get filtered questions based on the active tag using useMemo
   const filteredQuestions = useMemo(() => {
@@ -91,6 +107,18 @@ const QAPlayground = () => {
       resetQuestion();
     }
   }, [currentQuestionIndex, filteredQuestions.length, resetQuestion]);
+
+  // Update your set selection function
+const handleSetSelection = (set) => {
+  setSelectedSets({
+    ...selectedSets,
+    [selectedLanguage]: set
+  });
+};
+
+// Get the current selected set based on language
+const currentSelectedSet = selectedSets[selectedLanguage];
+
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -276,163 +304,198 @@ const QAPlayground = () => {
  
   return (
     <div className={`qa-container ${isDarkMode ? 'dark-theme' : ''}`}>
-      {/* Header */}
-      <div className="qa-header">
-        <h1 className="qa-title">Code Playground</h1>
-        <button onClick={toggleTheme} className="theme-toggle">
-          {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-        </button>
-      </div>
-      
-      {/* Tag Filter */}
-      <div className="tag-filter-container">
-        <label>Filter by Tag:</label>
-        <select 
-          value={activeTag} 
-          onChange={(e) => handleTagFilter(e.target.value)}
-          className="tag-filter-select"
-        >
-          <option value="">All</option>
-          {availableTags.map(tag => (
-            <option key={tag} value={tag}>{tag}</option>
-          ))}
-        </select>
-      </div>
-      
-      {/* Language Tabs */}
-      <div className="language-tabs">
-        <button 
-          className={`language-tab ${selectedLanguage === 'java' ? 'active' : ''}`}
-          onClick={() => handleLanguageChange('java')}
-        >
-          Java
-        </button>
-        <button 
-          className={`language-tab ${selectedLanguage === 'python' ? 'active' : ''}`}
-          onClick={() => handleLanguageChange('python')}
-        >
-          Python
-        </button>
-        <button 
-          className={`language-tab ${selectedLanguage === 'react' ? 'active' : ''}`}
-          onClick={() => handleLanguageChange('react')}
-        >
-          React
-        </button>
-      </div>
-      
-      {/* Tag this question section */}
-      <div className="tag-selection">
-        <span className="tag-label">Tag this Question:</span>
-        <div className="tag-buttons">
-          {availableTags.map(tag => (
-            <button
-              key={tag}
-              className={`tag-button ${currentTag === tag ? 'selected' : ''}`}
-              onClick={() => handleTagQuestion(tag)}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      </div>
-     
-      {filteredQuestions.length > 0 ? (
-        <>
-          {/* Navigation bar */}
-          <div className="nav-container">
-            <button
-              onClick={handlePrevious}
-              disabled={currentQuestionIndex === 0}
-              className={`nav-button ${currentQuestionIndex === 0 ? 'disabled' : ''}`}
-            >
-              {isMobile ? '←' : 'Previous'}
-            </button>
-           
-            <span className="question-counter">
-              Question {filteredQuestions.length > 0 ? currentQuestionIndex + 1 : 0} of {filteredQuestions.length}
-            </span>
-           
-            <button
-              onClick={handleNext}
-              disabled={currentQuestionIndex === filteredQuestions.length - 1}
-              className={`nav-button ${currentQuestionIndex === filteredQuestions.length - 1 ? 'disabled' : ''}`}
-            >
-              {isMobile ? '→' : 'Next'}
+      <div className="content-wrapper">
+      <div className="sidebar">
+  <h3>{selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Sets</h3>
+  {selectedLanguage === 'react' && reactQuestionsData.map(set => (
+    <button 
+      key={set.category} 
+      className={currentSelectedSet === set.category ? "active" : ""}
+      onClick={() => handleSetSelection(set.category)}
+    >
+      {set.category}
+    </button>
+  ))}
+  {selectedLanguage === 'java' && javaQuestionsData.map(set => (
+    <button 
+      key={set.category} 
+      className={currentSelectedSet === set.category ? "active" : ""}
+      onClick={() => handleSetSelection(set.category)}
+    >
+      {set.category}
+    </button>
+  ))}
+  {selectedLanguage === 'python' && pythonQuestionsData.map(set => (
+    <button 
+      key={set.category} 
+      className={currentSelectedSet === set.category ? "active" : ""}
+      onClick={() => handleSetSelection(set.category)}
+    >
+      {set.category}
+    </button>
+  ))}
+</div>
+        
+        <div className="qa-content">
+          {/* Header */}
+          <div className="qa-header">
+            <h1 className="qa-title">Code Playground</h1>
+            <button onClick={toggleTheme} className="theme-toggle">
+              {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
             </button>
           </div>
-         
-          {/* Question content */}
-          <div className="question-section">
-            <h2 className="question-title">{currentQuestion?.title}</h2>
-            
-            <div className="code-container">
-              <p className="question-description">{currentQuestion?.description}</p>
+          
+          {/* Tag Filter */}
+          <div className="tag-filter-container">
+            <label>Filter by Tag:</label>
+            <select 
+              value={activeTag} 
+              onChange={(e) => handleTagFilter(e.target.value)}
+              className="tag-filter-select"
+            >
+              <option value="">All</option>
+              {availableTags.map(tag => (
+                <option key={tag} value={tag}>{tag}</option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Language Tabs */}
+          <div className="language-tabs">
+            <button 
+              className={`language-tab ${selectedLanguage === 'java' ? 'active' : ''}`}
+              onClick={() => handleLanguageChange('java')}
+            >
+              Java
+            </button>
+            <button 
+              className={`language-tab ${selectedLanguage === 'python' ? 'active' : ''}`}
+              onClick={() => handleLanguageChange('python')}
+            >
+              Python
+            </button>
+            <button 
+              className={`language-tab ${selectedLanguage === 'react' ? 'active' : ''}`}
+              onClick={() => handleLanguageChange('react')}
+            >
+              React
+            </button>
+          </div>
+          
+          {/* Tag this question section */}
+          <div className="tag-selection">
+            <span className="tag-label">Tag this Question:</span>
+            <div className="tag-buttons">
+              {availableTags.map(tag => (
+                <button
+                  key={tag}
+                  className={`tag-button ${currentTag === tag ? 'selected' : ''}`}
+                  onClick={() => handleTagQuestion(tag)}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          {filteredQuestions.length > 0 ? (
+            <>
+              {/* Navigation bar */}
+              <div className="nav-container">
+                <button
+                  onClick={handlePrevious}
+                  disabled={currentQuestionIndex === 0}
+                  className={`nav-button ${currentQuestionIndex === 0 ? 'disabled' : ''}`}
+                >
+                  {isMobile ? '←' : 'Previous'}
+                </button>
+               
+                <span className="question-counter">
+                  Question {filteredQuestions.length > 0 ? currentQuestionIndex + 1 : 0} of {filteredQuestions.length}
+                </span>
+               
+                <button
+                  onClick={handleNext}
+                  disabled={currentQuestionIndex === filteredQuestions.length - 1}
+                  className={`nav-button ${currentQuestionIndex === filteredQuestions.length - 1 ? 'disabled' : ''}`}
+                >
+                  {isMobile ? '→' : 'Next'}
+                </button>
+              </div>
              
-              <div className="code-block">
-                <pre>{highlightMissingCode(currentQuestion?.code)}</pre>
-              </div>
-            </div>
-           
-            {/* Answer input section */}
-            <div className="answer-section">
-              <label className="answer-label">Your Answer:</label>
-              <div className="answer-container">
-                <input
-                  type="text"
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  className="answer-input"
-                  placeholder={isMobile ? "Type answer here" : "Type your answer here (press Enter to check)"}
-                />
-              </div>
-            </div>
-            
-            <div style={{ textAlign: 'center' }}>
-              <button
-                onClick={checkAnswer}
-                className="check-button"
-              >
-                Check Answer
-              </button>
-            </div>
-           
-            {/* Solution display */}
-            {showSolution && (
-              <div className={`solution-box ${feedback ? 'correct' : 'incorrect'}`}>
-                <p className="feedback-text">
-                  {feedback ? 'Correct!' : 'Not quite right.'}
-                </p>
-               
-                <div className="solution-section">
-                  <p className="solution-label">Solution:</p>
-                  <p className="solution-value">{currentQuestion?.solution}</p>
+              {/* Question content */}
+              <div className="question-section">
+                <h2 className="question-title">{currentQuestion?.title}</h2>
+                
+                <div className="code-container">
+                  <p className="question-description">{currentQuestion?.description}</p>
+                 
+                  <div className="code-block">
+                    <pre>{highlightMissingCode(currentQuestion?.code)}</pre>
+                  </div>
                 </div>
                
-                <div className="explanation-section">
-                  <p className="explanation-label">Explanation:</p>
-                  <p className="explanation-value">{currentQuestion?.explanation}</p>
+                {/* Answer input section */}
+                <div className="answer-section">
+                  <label className="answer-label">Your Answer:</label>
+                  <div className="answer-container">
+                    <input
+                      type="text"
+                      value={userAnswer}
+                      onChange={(e) => setUserAnswer(e.target.value)}
+                      className="answer-input"
+                      placeholder={isMobile ? "Type answer here" : "Type your answer here (press Enter to check)"}
+                    />
+                  </div>
                 </div>
+                
+                <div style={{ textAlign: 'center' }}>
+                  <button
+                    onClick={checkAnswer}
+                    className="check-button"
+                  >
+                    Check Answer
+                  </button>
+                </div>
+               
+                {/* Solution display */}
+                {showSolution && (
+                  <div className={`solution-box ${feedback ? 'correct' : 'incorrect'}`}>
+                    <p className="feedback-text">
+                      {feedback ? 'Correct!' : 'Not quite right.'}
+                    </p>
+                   
+                    <div className="solution-section">
+                      <p className="solution-label">Solution:</p>
+                      <p className="solution-value">{currentQuestion?.solution}</p>
+                    </div>
+                   
+                    <div className="explanation-section">
+                      <p className="explanation-label">Explanation:</p>
+                      <p className="explanation-value">{currentQuestion?.explanation}</p>
+                    </div>
+                  </div>
+                )}
               </div>
+            </>
+          ) : (
+            <div className="no-questions-message">
+              <p>No questions match the selected tag. Please select a different tag or add tags to your questions.</p>
+            </div>
+          )}
+          
+          {/* Keyboard shortcuts help */}
+          <div className="keyboard-shortcuts">
+            {isMobile ? (
+              <p>
+                <span>← Previous | → Next</span>
+                <span>Enter to Check Answer</span>
+              </p>
+            ) : (
+              <p>Keyboard shortcuts: ⬅️ Previous | ➡️ Next | Enter to Check Answer</p>
             )}
           </div>
-        </>
-      ) : (
-        <div className="no-questions-message">
-          <p>No questions match the selected tag. Please select a different tag or add tags to your questions.</p>
         </div>
-      )}
-      
-      {/* Keyboard shortcuts help */}
-      <div className="keyboard-shortcuts">
-        {isMobile ? (
-          <p>
-            <span>← Previous | → Next</span>
-            <span>Enter to Check Answer</span>
-          </p>
-        ) : (
-          <p>Keyboard shortcuts: ⬅️ Previous | ➡️ Next | Enter to Check Answer</p>
-        )}
       </div>
     </div>
   );
