@@ -166,10 +166,22 @@ body {
 .answer-container {
   border: 1px solid var(--border-secondary);
   padding: 0;
-  display: flex;
+  display: block;
   align-items: center;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Ensure proper styling in dark mode */
+.dark-theme textarea.answer-input {
+  background-color: transparent; /* Use your existing variable system */
+  color: var(--text-color);
+}
+
+/* Focus styles for textarea */
+textarea.answer-input:focus {
+  outline: none;
+  border-color: var(--border-secondary);
 }
 
 .answer-input {
@@ -187,6 +199,16 @@ body {
   color: var(--button-disabled-text);
   opacity: 0.7;
 }
+
+textarea.answer-input {
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+}
+
 
 /* Language Tabs Styling */
 .language-tabs {

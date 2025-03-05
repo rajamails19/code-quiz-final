@@ -268,25 +268,29 @@ const currentSelectedSet = selectedSets[selectedLanguage];
   // Set up keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Enter key to check answer
-      if (e.key === 'Enter' && !showSolution) {
+      // Skip navigation if focused on input field
+      const isInputFocused = document.activeElement.tagName === 'INPUT' || 
+                            document.activeElement.tagName === 'TEXTAREA';
+      
+      // Enter key to check answer (only if not pressing shift)
+      if (e.key === 'Enter' && !e.shiftKey && !showSolution && !isInputFocused) {
         checkAnswer();
       }
       
-      // Left arrow for previous question
-      if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+      // Left arrow for previous question (only if not in input)
+      if (e.key === 'ArrowLeft' && currentQuestionIndex > 0 && !isInputFocused) {
         handlePrevious();
       }
       
-      // Right arrow for next question
-      if (e.key === 'ArrowRight' && currentQuestionIndex < filteredQuestions.length - 1) {
+      // Right arrow for next question (only if not in input)
+      if (e.key === 'ArrowRight' && currentQuestionIndex < filteredQuestions.length - 1 && !isInputFocused) {
         handleNext();
       }
     };
-
+  
     // Add event listener
     window.addEventListener('keydown', handleKeyDown);
-
+  
     // Clean up
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
@@ -437,17 +441,24 @@ const currentSelectedSet = selectedSets[selectedLanguage];
                
                 {/* Answer input section */}
                 <div className="answer-section">
-                  <label className="answer-label">Your Answer:</label>
-                  <div className="answer-container">
-                    <input
-                      type="text"
-                      value={userAnswer}
-                      onChange={(e) => setUserAnswer(e.target.value)}
-                      className="answer-input"
-                      placeholder={isMobile ? "Type answer here" : "Type your answer here (press Enter to check)"}
-                    />
-                  </div>
-                </div>
+  <label className="answer-label">Your Answer:</label>
+  <div className="answer-container">
+    <textarea
+      value={userAnswer}
+      onChange={(e) => setUserAnswer(e.target.value)}
+      className="answer-input"
+      placeholder={isMobile ? "Type answer here" : "Type your answer here (press Enter to check, Shift+Enter for new line)"}
+      rows={3}
+      onKeyDown={(e) => {
+        // Prevent form submission on Enter without Shift
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          checkAnswer();
+        }
+      }}
+    />
+  </div>
+</div>
                 
                 <div style={{ textAlign: 'center' }}>
                   <button
