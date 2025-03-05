@@ -13,6 +13,7 @@
     const [showSolution, setShowSolution] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [notification, setNotification] = useState(null);
     // const [selectedSet, setSelectedSet] = useState("Set 1");
     const [selectedSets, setSelectedSets] = useState({
       java: "Set 1",
@@ -99,20 +100,28 @@
         .toLowerCase(); // Convert to lowercase
     };
     
+    const showNotification = (message, type) => {
+      setNotification({ message, type });
+    
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000); // Hide after 3 seconds
+    };
+
     
     const checkAnswer = useCallback(() => {
-      if (!currentQuestion) return;
-    
-      const normalizedUserAnswer = normalizeAnswer(userAnswer);
-      const normalizedSolution = normalizeAnswer(currentQuestion.solution);
-    
-      console.log("User Answer (Normalized):", normalizedUserAnswer);
-      console.log("Correct Solution (Normalized):", normalizedSolution);
-    
-      const isCorrect = normalizedUserAnswer === normalizedSolution;
-      setFeedback(isCorrect);
-      setShowSolution(true);
-    }, [currentQuestion, userAnswer]);
+  if (!currentQuestion) return;
+
+  const normalizedUserAnswer = normalizeAnswer(userAnswer);
+  const normalizedSolution = normalizeAnswer(currentQuestion.solution);
+
+  const isCorrect = normalizedUserAnswer === normalizedSolution;
+  setFeedback(isCorrect);
+  setShowSolution(true);
+
+  // Show popup notification
+  showNotification(isCorrect ? "✅ Correct!" : "❌ Not quite right. Try again.", isCorrect ? "success" : "error");
+}, [currentQuestion, userAnswer]);
     
     
     const handlePrevious = useCallback(() => {
@@ -462,6 +471,12 @@
                 
                   {/* Answer input section */}
                   <div className="answer-section">
+                     {/* Pop-up Notification */}
+    {notification && (
+      <div className={`notification ${notification.type}`}>
+        {notification.message}
+      </div>
+    )}
     <label className="answer-label">Your Answer:</label>
     <div className="answer-container">
       <textarea

@@ -172,6 +172,34 @@ body {
   box-sizing: border-box;
 }
 
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.notification.success {
+  background-color: #22c55e; /* Green */
+}
+
+.notification.error {
+  background-color: #ef4444; /* Red */
+}
+
+.notification.hidden {
+  opacity: 0;
+}
+
+
 /* Ensure proper styling in dark mode */
 .dark-theme textarea.answer-input {
   background-color: transparent; /* Use your existing variable system */
