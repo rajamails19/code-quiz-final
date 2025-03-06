@@ -376,7 +376,7 @@ function Counter() {
   {
     id: 18,
     title: "React Portal",
-    description: "React Portals let you render elements outside of their parent component. This is perfect for modals, popups, and tooltips! Complete the code below to create a modal that renders directly to the document body instead of inside its parent component.",
+    description: "Complete the code below to create a modal that renders directly to the document body instead of inside its parent component.",
     code: `function Modal({ isOpen, onClose, children }) {
     if (!isOpen) return null;
     
@@ -387,7 +387,7 @@ function Counter() {
     );
   }`,
     solution: "<div className=\"modal\">{children}</div>,",
-    explanation: "ReactDOM.createPortal takes two arguments: (1) the element you want to render and (2) where you want to render it. Here we're rendering our modal content to document.body, which makes it appear on top of everything else regardless of the parent component's CSS."
+    explanation: "React Portals let you render elements outside of their parent component. This is perfect for modals, popups, and tooltips! ReactDOM.createPortal takes two arguments: (1) the element you want to render and (2) where you want to render it. Here we're rendering our modal content to document.body, which makes it appear on top of everything else regardless of the parent component's CSS."
   },
   {
     id: 19,
