@@ -32,7 +32,7 @@
     });
     const [activeTag, setActiveTag] = useState('');
     const [sidebarOpen, setSidebarOpen] = useState(false);
-const [windowSize, setWindowSize] = useState({
+const [windowSize] = useState({
   width: window.innerWidth,
   height: window.innerHeight
 });
@@ -157,12 +157,17 @@ if (windowSize.width < 768) {
     }, [currentQuestionIndex, filteredQuestions.length, resetQuestion]);
 
     // Update your set selection function
-  const handleSetSelection = (set) => {
-    setSelectedSets({
-      ...selectedSets,
-      [selectedLanguage]: set
-    });
-  };
+    const handleSetSelection = (set) => {
+      // First update the selected set
+      setSelectedSets({
+        ...selectedSets,
+        [selectedLanguage]: set
+      });
+      
+      // Then reset the question index to 0
+      setCurrentQuestionIndex(0);
+      resetQuestion();
+    };
 
   // Get the current selected set based on language
   const currentSelectedSet = selectedSets[selectedLanguage];
@@ -287,14 +292,6 @@ if (windowSize.width < 768) {
           tag: '' 
         }));
 
-        const handleResize = () => {
-          setIsMobile(window.innerWidth <= 768);
-          setWindowSize({
-            width: window.innerWidth,
-            height: window.innerHeight
-          });
-        };
-        
         const initialTaggedQuestions = {
           java: initialJavaTags,
           react: initialReactTags,
@@ -305,6 +302,8 @@ if (windowSize.width < 768) {
         localStorage.setItem('taggedQuestions', JSON.stringify(initialTaggedQuestions));
       }
     }, []);
+
+    
 
     // Save tagged questions to localStorage whenever they change
     useEffect(() => {
