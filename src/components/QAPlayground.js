@@ -28,9 +28,24 @@
       python: []
     });
     const [activeTag, setActiveTag] = useState('');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+const [windowSize, setWindowSize] = useState({
+  width: window.innerWidth,
+  height: window.innerHeight
+});
     
     // Available tags
     const availableTags = ["Important", "Difficult", "GTK", "Revisit", "Others"];
+
+    // Toggle sidebar for mobile view
+const toggleSidebar = () => {
+  setSidebarOpen(!sidebarOpen);
+};
+
+// Close sidebar on set selection (mobile only)
+if (windowSize.width < 768) {
+  setSidebarOpen(false);
+}
 
     // Get questions based on selected language
     const getQuestions = useCallback(() => {
@@ -241,7 +256,17 @@
       const savedQuestions = localStorage.getItem('taggedQuestions');
       
       if (savedQuestions) {
-        setTaggedQuestions(JSON.parse(savedQuestions));
+        try {
+          setTaggedQuestions(JSON.parse(savedQuestions));
+        } catch (e) {
+          console.error("Error parsing saved questions:", e);
+          // Initialize with default if there's an error
+          setTaggedQuestions({
+            java: [],
+            react: [],
+            python: []
+          });
+        }
       } else {
         // Initialize with empty tags for all questions
         const initialJavaTags = javaQuestionsData.map(q => ({ 
@@ -258,6 +283,14 @@
           id: q.id, 
           tag: '' 
         }));
+
+        const handleResize = () => {
+          setIsMobile(window.innerWidth <= 768);
+          setWindowSize({
+            width: window.innerWidth,
+            height: window.innerHeight
+          });
+        };
         
         const initialTaggedQuestions = {
           java: initialJavaTags,
@@ -316,7 +349,14 @@
         if (e.key === 'ArrowRight' && currentQuestionIndex < filteredQuestions.length - 1 && !isInputFocused) {
           handleNext();
         }
+
+        // ESC to close sidebar on mobile
+if (e.key === 'Escape' && sidebarOpen) {
+  setSidebarOpen(false);
+}
       };
+
+      
     
       // Add event listener
       window.addEventListener('keydown', handleKeyDown);
@@ -325,7 +365,7 @@
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       }; 
-    }, [currentQuestionIndex, showSolution, filteredQuestions.length, checkAnswer, handlePrevious, handleNext]);
+    }, [currentQuestionIndex, showSolution, filteredQuestions.length, checkAnswer, handlePrevious, handleNext, sidebarOpen]);
 
     // Toggle theme and update document class for CSS
     useEffect(() => {
@@ -338,8 +378,17 @@
   
     return (
       <div className={`qa-container ${isDarkMode ? 'dark-theme' : ''}`}>
+        {isMobile && (
+  <button 
+    className="menu-toggle" 
+    onClick={toggleSidebar}
+    aria-label="Toggle sidebar menu"
+  >
+    {sidebarOpen ? '✕' : '☰'}
+  </button>
+)}
         <div className="content-wrapper">
-        <div className="sidebar">
+        <div className={`sidebar ${isMobile && sidebarOpen ? 'open' : ''} ${isMobile && !sidebarOpen ? 'closed' : ''}`}>
     <h3>{selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Sets</h3>
     {selectedLanguage === 'react' && reactQuestionsData.map(set => (
       <button 
