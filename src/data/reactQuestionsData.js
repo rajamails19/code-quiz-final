@@ -376,14 +376,18 @@ function Counter() {
   {
     id: 18,
     title: "React Portal",
-    description: "Fill in the missing ReactDOM.createPortal code to render the modal outside the parent DOM hierarchy.",
+    description: "Complete the code to create a modal using React Portal. The createPortal function should render the modal content to document.body instead of the parent component.",
     code: `function Modal({ isOpen, onClose, children }) {
-  if (!isOpen) return null;
-  
-  return /* Missing ReactDOM.createPortal code */;
-}`,
-    solution: "ReactDOM.createPortal(<div className=\"modal\">{children}</div>, document.body)",
-    explanation: "ReactDOM.createPortal lets you render children into a different part of the DOM. This is useful for components like modals, tooltips, or popovers that need to visually 'break out' of their parent container."
+    if (!isOpen) return null;
+    
+    // Use ReactDOM.createPortal to render this outside the parent component
+    return ReactDOM.createPortal(
+      /* Missing code */
+      document.body
+    );
+  }`,
+    solution: "<div className=\"modal\">{children}</div>,",
+    explanation: "ReactDOM.createPortal takes two arguments: the element to render and the DOM node to render it into. Here we're rendering a div with our children into document.body, which lets the modal appear above other content regardless of where the Modal component is used."
   },
   {
     id: 19,
