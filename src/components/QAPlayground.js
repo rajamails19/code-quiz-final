@@ -2,6 +2,8 @@
   import { javaQuestionsData } from '../data/javaQuestionsData';
   import { reactQuestionsData } from '../data/reactQuestionsData';
   import { pythonQuestionsData } from '../data/pythonQuestionsData';
+  import {reactSet1} from '../data/reactQuestionSets/reactSet1.js';
+  import {reactSet2} from '../data/reactQuestionSets/reactSet2.js';
   import './qa-playground.css';
 
   const QAPlayground = () => {
@@ -21,6 +23,7 @@
       python: "Set 1"
     });
     
+    // const reactQuestionsData = [reactSet1, reactSet2];
     // Tag-related state
     const [taggedQuestions, setTaggedQuestions] = useState({
       java: [],
