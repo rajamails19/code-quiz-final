@@ -390,31 +390,56 @@ function Counter() {
     explanation: "React Portals let you render elements outside of their parent component. This is perfect for modals, popups, and tooltips! ReactDOM.createPortal takes two arguments: (1) the element you want to render and (2) where you want to render it. Here we're rendering our modal content to document.body, which makes it appear on top of everything else regardless of the parent component's CSS."
   },
   {
+    id: 19.2,
+    title: "Error Boundary with React Hooks",
+    description: "Complete the ErrorBoundary component by filling in the onError prop that logs the error.",
+    code: `import { ErrorBoundary } from 'react-error-boundary';
+  
+  function ErrorFallback({ error }) {
+    return (
+      <div className="error-container">
+        <h2>Something went wrong:</h2>
+        <p>{error.message}</p>
+      </div>
+    );
+  }
+  
+  function MyErrorBoundary({ children }) {
+    return (
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        /* Missing onError prop */
+      >
+        {children}
+      </ErrorBoundary>
+    );
+  }`,
+    solution: "onError={(error, info) => console.error('Caught an error:', error, info)}",
+    explanation: "The onError prop takes a callback function that will be called when an error is caught. This simple inline function logs the error and its info, similar to what componentDidCatch would do in class components."
+  },
+  {
     id: 19,
-    title: "Error Boundary",
-    description: "Fill in the missing componentDidCatch method to make this component work as an error boundary.",
-    code: `class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+    title: "Error Boundary (Functional Component)",
+    description: "Fill in the missing error handling logic to make this functional component work as an error boundary.",
+    code: `import React, { useState, useEffect } from "react";
   
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
+  function ErrorBoundary({ children }) {
+    const [hasError, setHasError] = useState(false);
   
-  /* Missing componentDidCatch method */
+    useEffect(() => {
+      /* Missing error handling logic */
+    }, []);
   
-  render() {
-    if (this.state.hasError) {
+    if (hasError) {
       return <h1>Something went wrong.</h1>;
     }
-    return this.props.children;
+  
+    return children;
+  }`,
+    solution: `window.onerror = () => setHasError(true);`,
+    explanation: "The window.onerror event captures global JavaScript errors, and we update the state to show a fallback UI when an error occurs."
   }
-}`,
-    solution: "componentDidCatch(error, errorInfo) { console.log(error, errorInfo); }",
-    explanation: "The componentDidCatch lifecycle method is used in error boundaries to catch JavaScript errors in their child component tree and display a fallback UI instead of crashing. It receives the error that was thrown and additional information about where the error occurred."
-  },
+  ,
   {
     id: 20,
     title: "useEffect Cleanup",
