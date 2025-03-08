@@ -238,7 +238,7 @@ export const reactQuestionsData = [
     /* Missing fragment closing */
   );
 }`,
-    solution: "<>",
+    solution: "<></>",
     explanation: "React Fragments let you group a list of children without adding extra nodes to the DOM. The shorthand syntax is to use empty angle brackets (<> and </>) which is equivalent to <React.Fragment> and </React.Fragment>."
   },
   {
@@ -386,7 +386,7 @@ function Counter() {
       document.body
     );
   }`,
-    solution: "<div className=\"modal\">{children}</div>,",
+    solution: "<div className=\"modal\">{children}</div>",
     explanation: "React Portals let you render elements outside of their parent component. This is perfect for modals, popups, and tooltips! ReactDOM.createPortal takes two arguments: (1) the element you want to render and (2) where you want to render it. Here we're rendering our modal content to document.body, which makes it appear on top of everything else regardless of the parent component's CSS."
   },
   {
@@ -414,7 +414,7 @@ function Counter() {
       </ErrorBoundary>
     );
   }`,
-    solution: "onError={(error, info) => console.error('Caught an error:', error, info)}",
+    solution: "onError={(err, info) => console.error('this error:', err, info)}",
     explanation: "The onError prop takes a callback function that will be called when an error is caught. This simple inline function logs the error and its info, similar to what componentDidCatch would do in class components."
   },
   {
