@@ -473,16 +473,18 @@ function Counter() {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
-    /* Missing debounce implementation */
+    const handler = setTimeout(() => { setDebouncedValue(value); }, delay);
+    
     
     return () => {
-      clearTimeout(handler);
+      /* Missing implementation */
+      
     };
   }, [value, delay]);
 
   return debouncedValue;
 }`,
-      solution: "const handler = setTimeout(() => { setDebouncedValue(value); }, delay);",
+      solution: "clearTimeout(handler);",
       explanation: "This custom hook debounces a value by delaying the update of debouncedValue until after the specified delay time has passed since the last change to value. The cleanup function ensures any pending timeout is cleared if the value changes again before the delay elapses."
     },
     {
@@ -497,8 +499,8 @@ function Counter() {
       <button onClick={onUpdate}>Update</button>
     </div>
   );
-}, /* Missing custom comparison function */);`,
-      solution: "(prevProps, nextProps) => prevProps.user.id === nextProps.user.id",
+},(prevProps, nextProps) =>  /* Missing custom comparison function */);`,
+      solution: "prevProps.user.id === nextProps.user.id",
       explanation: "React.memo can accept a custom comparison function as its second argument to determine if a re-render is necessary. This function returns true if the props are equal (component should not re-render) and false if they aren't equal (component should re-render). Here, we're only comparing the user ID rather than the entire user object."
     },
     {
@@ -509,8 +511,9 @@ function Counter() {
   const [height, setHeight] = useState(0);
   const ref = useRef(null);
 
-  /* Missing useLayoutEffect hook */
-    if (ref.current) {
+  
+  useLayoutEffect(() => {
+    /* Missing if block */ {
       setHeight(ref.current.getBoundingClientRect().height);
     }
   }, [content]);
@@ -522,7 +525,7 @@ function Counter() {
     </>
   );
 }`,
-      solution: "useLayoutEffect(() => {",
+      solution: "if (ref.current) ",
       explanation: "useLayoutEffect works similarly to useEffect, but it fires synchronously after all DOM mutations and before the browser paints. This makes it useful for DOM measurements that need to be calculated before the user sees the page, preventing visual flickering that might occur with useEffect."
     },
     {
@@ -541,7 +544,7 @@ function appReducer(state, action) {
 }
 
 function AppProvider({ children }) {
-  /* Missing useReducer implementation */
+  /* Missing useReducer implementation */ = useReducer(appReducer, { count: 0 });
 
   return (
     <AppStateContext.Provider value={state}>
@@ -551,7 +554,7 @@ function AppProvider({ children }) {
     </AppStateContext.Provider>
   );
 }`,
-      solution: "const [state, dispatch] = useReducer(appReducer, { count: 0 });",
+      solution: "const [state, dispatch] ",
       explanation: "This pattern combines useReducer with Context to create a global state management solution. The state and dispatch function are provided separately through two different Context providers, allowing components to consume only what they need - either the state values or the dispatch function to update state."
     },
     {
@@ -573,34 +576,7 @@ function AppProvider({ children }) {
       solution: "useImperativeHandle(ref, () => ({",
       explanation: "useImperativeHandle customizes the instance value that is exposed when using ref. Instead of exposing the DOM node, we can expose a custom object with specific methods. This allows parent components to call methods on a child component imperatively while limiting what the parent can access."
     },
-    // {
-    //   id: 26,
-    //   title: "useMemo for Expensive Calculations with Multiple Dependencies",
-    //   description: "Fill in the missing useMemo implementation to memoize a result that depends on multiple values.",
-    //   code: `function ProductTable({ products, categories, searchTerm }) {
-    //   // Calculate filtered products
-    //   const filteredProducts = /* Missing useMemo implementation */
-        
-    //   // Function that does the actual filtering
-    //   function getFilteredProducts() {
-    //     console.log('Filtering products...');
-    //     return products
-    //       .filter(product => categories.includes(product.category))
-    //       .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    //       .sort((a, b) => a.price - b.price);
-    //   }
-    
-    //   return (
-    //     <ul>
-    //       {filteredProducts.map(product => (
-    //         <li key={product.id}>{product.name} - ${product.price}</li>
-    //       ))}
-    //     </ul>
-    //   );
-    // }`,
-    //   solution: "useMemo(() => getFilteredProducts(), [products, categories, searchTerm]);",
-    //   explanation: "useMemo is used to memoize expensive calculations so they don't run on every render. The calculation result is only recomputed when one of the dependencies changes. We need to include all three values (products, categories, and searchTerm) in the dependencies array since the calculation depends on all of them."
-    // },
+   
     {
       id: 27,
       title: "Custom Hook for API Fetching with Caching",
@@ -612,6 +588,7 @@ function AppProvider({ children }) {
   const fetchData = useCallback(async (url) => {
     // Check if we have a cached response
     /* Missing cache implementation */
+    {\n      return cache.current[url].data;\n    }
     
     try {
       const response = await fetch(url);
@@ -632,7 +609,7 @@ function AppProvider({ children }) {
 
   return { fetchData };
 }`,
-      solution: "if (cache.current[url] && Date.now() - cache.current[url].timestamp < 300000) {\n      return cache.current[url].data;\n    }",
+      solution: "if (cache.current[url] && Date.now() - cache.current[url].timestamp < 300000)",
       explanation: "This custom hook implements a simple caching mechanism for API requests. Before making a fetch request, it checks if a cached response exists for the URL and if the cache is still fresh (less than 5 minutes old in this example). If a valid cached response exists, it returns that instead of making a new request."
     },
     {
@@ -716,6 +693,7 @@ function Tab({ index, children }) {
   // This is the immediate user input
   const [searchQuery, setSearchQuery] = useState(query);
   
+  const deferredQuery = 
   /* Missing useDeferredValue implementation */
   
   // Filter items based on the deferred query value
@@ -744,30 +722,16 @@ function Tab({ index, children }) {
     </div>
   );
 }`,
-      solution: "const deferredQuery = useDeferredValue(searchQuery);",
+      solution: "useDeferredValue(searchQuery);",
       explanation: "useDeferredValue accepts a value and returns a new copy of that value that will defer to more urgent updates. This is similar to debouncing or throttling but built into React's rendering mechanism. The deferred value will update after more urgent updates (like user input) have completed, allowing the UI to remain responsive even during complex rendering."
     },
     {
       id: 31,
       title: "Suspense for Data Fetching",
       description: "Fill in the missing code to use React Suspense with a resource fetching pattern.",
-      code: `// Resource fetcher
-function fetchProfileData(userId) {
-  let userPromise = fetchUser(userId);
-  let postsPromise = fetchPosts(userId);
-  
-  return {
-    user: /* Missing suspending resource reader */,
-    posts: /* Missing suspending resource reader */
-  };
-}
-
-// Component that uses the suspending resource
-function ProfilePage({ userId }) {
-  const resource = fetchProfileData(userId);
-  
+      code: `  
   return (
-    <Suspense fallback={<h1>Loading profile...</h1>}>
+    <Suspense /*Missing Code*/>
       <ProfileDetails resource={resource} />
       <Suspense fallback={<h2>Loading posts...</h2>}>
         <ProfilePosts resource={resource} />
@@ -775,7 +739,7 @@ function ProfilePage({ userId }) {
     </Suspense>
   );
 }`,
-      solution: "{\n    read() {\n      return userPromise;\n    }\n  }",
+      solution: "fallback={<h1>Loading profile...</h1>}",
       explanation: "This pattern implements a resource reader compatible with React Suspense for data fetching. The read method either returns the resolved data or throws the promise if it's still pending, which causes React to suspend rendering until the promise resolves. This allows for declarative loading states with Suspense fallbacks."
     },
     {
@@ -789,6 +753,8 @@ import React, { Suspense } from 'react';
 // import HeavyFeature from './HeavyFeature';
 
 // Code-split import
+
+const HeavyFeature = 
 /* Missing React.lazy implementation */
 
 function App() {
@@ -801,7 +767,7 @@ function App() {
     </div>
   );
 }`,
-      solution: "const HeavyFeature = React.lazy(() => import('./HeavyFeature'));",
+      solution: "React.lazy(() => import('./HeavyFeature'));",
       explanation: "React.lazy lets you render a dynamic import as a regular component. It will automatically load the bundle containing the imported component when the component is first rendered. This helps reduce bundle size and improves initial load performance by only loading code when needed."
     },
     {
@@ -841,11 +807,13 @@ function App() {
       description: "Fill in the missing HOC implementation to add authentication checking to components.",
       code: `// Higher-Order Component for auth protection
 function withAuth(Component) {
-  /* Missing HOC implementation */
+return
+  
     function WithAuth(props) {
       const { isAuthenticated, user } = useAuth();
       
-      if (!isAuthenticated) {
+      /* Missing HOC implementation */
+       {
         return <Redirect to="/login" />;
       }
       
@@ -860,7 +828,7 @@ function withAuth(Component) {
 
 // Usage of the HOC
 const ProtectedDashboard = withAuth(Dashboard);`,
-      solution: "return",
+      solution: "if (!isAuthenticated)",
       explanation: "A Higher-Order Component (HOC) is a function that takes a component and returns a new component with additional props or behavior. This HOC adds authentication protection by checking if the user is authenticated before rendering the wrapped component. If not, it redirects to the login page. This pattern allows you to reuse authentication logic across multiple components."
     },
     {
@@ -989,132 +957,6 @@ function UserProfile() {
 }`,
       solution: "const { userId } = useParams();",
       explanation: "useParams is a hook from React Router that lets you access the route parameters from the current URL. In this component, we're using it to extract the userId from a route like /users/:userId, then using that ID to fetch the user's data from an API. This allows for dynamic rendering based on the URL parameters."
-    },
-    {
-      id: 38,
-      title: "Render Props Pattern",
-      description: "Fill in the missing render prop implementation to provide mouse position to a child component.",
-      code: `class MouseTracker extends React.Component {
-  state = { x: 0, y: 0 };
-  
-  handleMouseMove = (event) => {
-    this.setState({
-      x: event.clientX,
-      y: event.clientY
-    });
-  };
-  
-  render() {
-    return (
-      <div 
-        style={{ height: '100vh' }} 
-        onMouseMove={this.handleMouseMove}
-      >
-        {/* Missing render prop usage */}
-      </div>
-    );
-  }
-}
-
-// Usage:
-<MouseTracker>
-  {(mousePosition) => (
-    <div style={{ 
-      position: 'absolute',
-      left: mousePosition.x,
-      top: mousePosition.y,
-      background: 'red',
-      width: 10,
-      height: 10,
-      borderRadius: '50%'
-    }} />
-  )}
-</MouseTracker>`,
-      solution: "this.props.children(this.state)",
-      explanation: "The render props pattern involves passing a function as a child or prop to a component, which then calls that function from its render method with data as arguments. This allows for flexible composition of component behavior. In this case, the MouseTracker component tracks mouse position and provides that data to its children via a render prop."
-    },
-    {
-      id: 39,
-      title: "Custom Hook for Infinite Scrolling",
-      description: "Fill in the missing intersection observer implementation to create an infinite scrolling hook.",
-      code: `function useInfiniteScroll(callback) {
-  const [isFetching, setIsFetching] = useState(false);
-  const observerRef = useRef(null);
-  const targetRef = useRef(null);
-  
-  const fetchMoreItems = useCallback(() => {
-    setIsFetching(true);
-    callback().finally(() => {
-      setIsFetching(false);
-    });
-  }, [callback]);
-  
-  useEffect(() => {
-    /* Missing intersection observer initialization */
-    
-    if (targetRef.current) {
-      observerRef.current.observe(targetRef.current);
-    }
-    
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, [fetchMoreItems]);
-  
-  return { targetRef, isFetching };
-}`,
-      solution: "observerRef.current = new IntersectionObserver(\n      entries => {\n        if (entries[0].isIntersecting && !isFetching) {\n          fetchMoreItems();\n        }\n      },\n      { threshold: 0.1 }\n    );",
-      explanation: "This custom hook implements infinite scrolling using the Intersection Observer API. When the observed element (referenced by targetRef) comes into view, the callback function is called to fetch more items. This is commonly used for loading more content as the user scrolls down a list or feed."
-    },
-    {
-      id: 40,
-      title: "Error Boundary with React Router",
-      description: "Fill in the missing getDerivedStateFromError implementation to handle routing errors gracefully.",
-      code: `import { withRouter } from 'react-router-dom';
-
-class ErrorBoundary extends React.Component {
-  state = {
-    hasError: false,
-    error: null,
-    errorInfo: null
-  };
-  
-  /* Missing getDerivedStateFromError implementation */
-  
-  componentDidCatch(error, errorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
-    this.setState({ errorInfo });
-  }
-  
-  handleReset = () => {
-    this.setState({ hasError: false, error: null, errorInfo: null });
-    this.props.history.push('/');
-  };
-  
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="error-boundary">
-          <h1>Something went wrong.</h1>
-          <details style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo && this.state.errorInfo.componentStack}
-          </details>
-          <button onClick={this.handleReset}>Go to Home Page</button>
-        </div>
-      );
-    }
-    
-    return this.props.children;
-  }
-}
-
-export default withRouter(ErrorBoundary);`,
-      solution: "static getDerivedStateFromError(error) {\n    return { hasError: true, error };\n  }",
-      explanation: "Error boundaries are React components that catch JavaScript errors in their child component tree and display a fallback UI. getDerivedStateFromError is a lifecycle method called during the render phase when an error is thrown, allowing the component to update its state and display an error UI. This implementation also integrates with React Router to allow navigation to the home page after an error."
     }
   ]
 },
